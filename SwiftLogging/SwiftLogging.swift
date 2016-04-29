@@ -79,45 +79,52 @@ public class Logger {
     }
 
     public func log(event: Event, immediate: Bool = false) {
-
         if immediate == false {
             dispatch_async(queue) {
-                self.log(event, immediate: true)
-            }
-            return
-        }
-
-        if count == 0 {
-            startup()
-        }
-        count += 1
-
-        let shouldFlush = event.tags?.contains(flushTag)
-
-        var filteredEvent1: Event? = event
-        for (_, filter) in filters {
-            filteredEvent1 = filter(filteredEvent1!)
-            if filteredEvent1 == nil {
-                return
+                [weak self] in
+                self?.privateLog(event)
             }
         }
-
-        destinationLoop: for (_, destination) in destinations {
-            var filteredEvent2: Event? = filteredEvent1
-            for filter in destination.filters {
-                filteredEvent2 = filter(filteredEvent2!)
-                if filteredEvent2 == nil {
-                    continue destinationLoop
-                }
-            }
-            destination.receiveEvent(filteredEvent2!)
-        }
-
-        if shouldFlush == true {
-            flush()
+        else {
+            privateLog(event)
         }
     }
 
+    private func privateLog(event: Event) {
+        autoreleasepool() {
+            if count == 0 {
+                startup()
+            }
+            count += 1
+            
+            let shouldFlush = event.tags?.contains(flushTag)
+            
+            var filteredEvent1: Event? = event
+            for (_, filter) in filters {
+                filteredEvent1 = filter(filteredEvent1!)
+                if filteredEvent1 == nil {
+                    return
+                }
+            }
+            
+            destinationLoop: for (_, destination) in destinations {
+                var filteredEvent2: Event? = filteredEvent1
+                for filter in destination.filters {
+                    filteredEvent2 = filter(filteredEvent2!)
+                    if filteredEvent2 == nil {
+                        continue destinationLoop
+                    }
+                }
+                destination.receiveEvent(filteredEvent2!)
+            }
+            
+            if shouldFlush == true {
+                flush()
+            }
+        }
+    }
+    
+    
     func internalLog(subject: Any?) {
         dispatch_async(consoleQueue) {
             print(subject)
@@ -185,13 +192,7 @@ public typealias UserInfo = Dictionary <String, Any>
 
 public struct Event {
 
-    static var nextID: Int = 0
-
-    static func generateID() -> Int {
-        let id = nextID
-        nextID += 1
-        return id
-    }
+    static var idGenerator = IDGenerator()
 
     // TODO: we'd like formatters to be able to special case subject formatting. We rely on String(subject) currently
 
@@ -204,7 +205,7 @@ public struct Event {
     public let userInfo: UserInfo?
 
     public init(subject: Any?, priority: Priority, timestamp: Timestamp? = Timestamp(), source: Source, tags: Tags? = nil, userInfo: UserInfo? = nil) {
-        self.id = Event.generateID()
+        self.id = Event.idGenerator.next()
         self.subject = subject
         self.priority = priority
         self.timestamp = timestamp
@@ -270,3 +271,4 @@ public class Destination {
 // MARK: -
 
 public typealias Filter = (Event) -> Event?
+

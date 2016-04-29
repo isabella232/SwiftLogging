@@ -33,11 +33,23 @@ public func preciseFormatter(event: Event) -> String {
 }
 
 public func terseFormatter(event: Event) -> String {
-
-    if let tags = event.tags where tags.contains(preformattedTag) {
-        return String(event.subject)
+    return autoreleasepool() {
+        if let tags = event.tags where tags.contains(preformattedTag) {
+            return String(event.subject)
+        }
+        return "\(event.timestamp!.toTimeString) \(event.priority.toEmoji) [\(event.source)]: \(event.subject)"
     }
-
-    return "\(event.timestamp!.toTimeString) \(event.priority.toEmoji) [\(event.source)]: \(event.subject)"
 }
 
+public func simpleFormatter(event: Event) -> String {
+    return String(event)
+    
+}
+
+func autoreleasepool <R> (code: () -> R) -> R {
+    var result: R!
+    autoreleasepool() {
+        result = code()
+    }
+    return result
+}

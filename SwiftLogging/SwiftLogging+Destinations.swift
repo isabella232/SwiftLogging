@@ -111,9 +111,13 @@ public class FileDestination: Destination {
 
     public override func shutdown() {
         dispatch_async(queue) {
-            [unowned self] in
-            self.open = false
-            dispatch_io_close(self.channel, 0)
+            [weak self] in
+            
+            guard let strong_self = self else {
+                return
+            }
+            strong_self.open = false
+            dispatch_io_close(strong_self.channel, 0)
         }
     }
 
@@ -121,19 +125,20 @@ public class FileDestination: Destination {
         dispatch_async(queue) {
             [weak self] in
 
-            if let strong_self = self {
-                if strong_self.open == false {
-                    return
-                }
+            guard let strong_self = self else {
+                return
+            }
+            guard strong_self.open == true else {
+                return
+            }
 
-                let string = strong_self.formatter(event) + "\n"
-                let data = (string as NSString).dataUsingEncoding(NSUTF8StringEncoding)!
-                // DISPATCH_DATA_DESTRUCTOR_DEFAULT is missing in swiff
-                let dispatchData = dispatch_data_create(data.bytes, data.length, strong_self.queue, nil)
+            let string = strong_self.formatter(event) + "\n"
+            let data = (string as NSString).dataUsingEncoding(NSUTF8StringEncoding)!
+            // DISPATCH_DATA_DESTRUCTOR_DEFAULT is missing in swiff
+            let dispatchData = dispatch_data_create(data.bytes, data.length, strong_self.queue, nil)
 
-                dispatch_io_write(strong_self.channel, 0, dispatchData, strong_self.queue) {
-                    (done: Bool, data: dispatch_data_t!, error: Int32) -> Void in
-                }
+            dispatch_io_write(strong_self.channel, 0, dispatchData, strong_self.queue) {
+                (done: Bool, data: dispatch_data_t!, error: Int32) -> Void in
             }
         }
     }
@@ -142,10 +147,12 @@ public class FileDestination: Destination {
         dispatch_barrier_async(queue) {
             [weak self] in
 
-            if let strong_self = self {
-                let descriptor = dispatch_io_get_descriptor(strong_self.channel)
-                fsync(descriptor)
+            guard let strong_self = self else {
+                return
             }
+
+            let descriptor = dispatch_io_get_descriptor(strong_self.channel)
+            fsync(descriptor)
         }
     }
 

@@ -8,20 +8,21 @@
 
 import Cocoa
 
+import SwiftLogging
+
 class ViewController: NSViewController {
 
-    override func viewDidLoad() {
-        super.viewDidLoad()
+    var counter = 0
+    
+    @IBAction func log(sender: AnyObject) {
+        SwiftLogging.log.debug("Starting Log")
+        for m in 0..<1 {
+            //usleep(useconds_t(5.0 * 100000))
+            for n in 0..<128000 {
 
-        // Do any additional setup after loading the view.
-    }
-
-    override var representedObject: AnyObject? {
-        didSet {
-        // Update the view, if already loaded.
+                SwiftLogging.log.info("Hello world: \(m), \(n)")
+            }
         }
     }
-
-
 }
 

@@ -8,6 +8,8 @@
 
 import Foundation
 
+import SwiftUtilities
+
 internal let iso8601Formatter: NSDateFormatter = {
     let dateFormatter = NSDateFormatter()
     dateFormatter.locale = NSLocale(localeIdentifier: "en_US_POSIX")
@@ -114,4 +116,22 @@ public func banner(string: String, width: Int = 72, borderCharacter: Character =
     output += "".stringByPaddingToLength(width, withString: borderString, startingAtIndex: 0)
 
     return output
+}
+
+// MARK: -
+
+internal class IDGenerator {
+
+    internal var nextID = 0
+    
+    var lock = NSLock()
+    
+    func next() -> Int {
+        return lock.with() {
+            let id = nextID
+            nextID += 1
+            return id
+        }
+    }
+    
 }
