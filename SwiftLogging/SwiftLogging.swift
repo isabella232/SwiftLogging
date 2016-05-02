@@ -18,8 +18,9 @@ public class Logger {
     public internal(set) var destinations: [String: Destination] = [:]
     public internal(set) var filters: [(String, Filter)] = []
 
-    public let queue = dispatch_queue_create("io.schwa.SwiftLogger", DISPATCH_QUEUE_SERIAL)
-    public let consoleQueue = dispatch_queue_create("io.schwa.SwiftLogger.console", DISPATCH_QUEUE_SERIAL)
+    
+    public let queue = dispatch_queue_create("io.schwa.SwiftLogger", dispatch_queue_attr_make_with_qos_class(DISPATCH_QUEUE_SERIAL, QOS_CLASS_UTILITY, 0))
+    public let consoleQueue = dispatch_queue_create("io.schwa.SwiftLogger.console", dispatch_queue_attr_make_with_qos_class(DISPATCH_QUEUE_SERIAL, QOS_CLASS_USER_INITIATED, 0))
 
     internal let startTimestamp: Timestamp = Timestamp()
     internal var count: Int64 = 0

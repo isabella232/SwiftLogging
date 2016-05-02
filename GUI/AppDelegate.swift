@@ -20,18 +20,22 @@ public class NilDestination: Destination {
     var accumalatedHashes: Int = 0
     
     public override func receiveEvent(event: Event) {
+
 //        dispatch_async(logger.consoleQueue) {
 //            [weak self] in
 //            guard let strong_self = self else {
 //                return
 //            }
-//
-//            let strong_self = self
-//            let string = String(event)
-//            strong_self.accumalatedHashes ^= string.hashValue
-            print(event)
-        }
-//    }
+
+            
+//            autoreleasepool() {
+                let string = String(event.timestamp)
+
+                let strong_self = self
+                strong_self.accumalatedHashes ^= string.hashValue
+//            }
+//        }
+    }
 }
 
 @NSApplicationMain

@@ -10,20 +10,21 @@ import Foundation
 
 import SwiftUtilities
 
-internal let iso8601Formatter: NSDateFormatter = {
-    let dateFormatter = NSDateFormatter()
-    dateFormatter.locale = NSLocale(localeIdentifier: "en_US_POSIX")
-    dateFormatter.dateFormat = "yyyy'-'MM'-'dd'T'HH':'mm':'ss.SSSXX"
-//    dateFormatter.timeZone = NSTimeZone(name: "UTC")
-    return dateFormatter
-}()
+internal extension NSDateFormatter {
+    convenience init(dateFormat: String) {
+        self.init()
+        self.dateFormat = dateFormat
+    }
 
-internal let timeFormatter: NSDateFormatter = {
-    let dateFormatter = NSDateFormatter()
-    dateFormatter.dateFormat = "HH':'mm':'ss.SSS"
-//    dateFormatter.timeZone = NSTimeZone(name: "UTC")
-    return dateFormatter
-}()
+    convenience init(dateFormat: String, locale: NSLocale) {
+        self.init(dateFormat: dateFormat)
+        self.locale = locale
+    }
+}
+
+internal let iso8601Formatter: NSDateFormatter = NSDateFormatter(dateFormat: "yyyy'-'MM'-'dd'T'HH':'mm':'ss.SSSXX", locale: NSLocale(localeIdentifier: "en_US_POSIX"))
+
+internal let timeFormatter: NSDateFormatter = NSDateFormatter(dateFormat: "HH':'mm':'ss.SSS")
 
 extension String {
     func escape(asASCII  asASCII: Bool, extraCharacters: NSCharacterSet? = nil) -> String {
