@@ -8,24 +8,15 @@
 
 import Cocoa
 
-import SwiftLogging
-
 class ViewController: NSViewController {
 
-    var counter = 0
+    override func viewDidLoad() {
+        print(Logger.sharedInstance.queue)
+    }
     
     @IBAction func log(sender: AnyObject) {
-        
-        SwiftLogging.log.debug("Starting Log")
-        for m in 0..<1 {
-            //usleep(useconds_t(5.0 * 100000))
-            for n in 0..<64000 {
-                
-                SwiftLogging.log.info("Hello world: \(m), \(n)")
-            }
-        }
-        
-        
+        print("Submitting")
+        stress()
+        print("Submitted")
     }
 }
-
