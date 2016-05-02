@@ -11,12 +11,9 @@ import Cocoa
 class ViewController: NSViewController {
 
     override func viewDidLoad() {
-        print(Logger.sharedInstance.queue)
     }
     
     @IBAction func log(sender: AnyObject) {
-        print("Submitting")
         stress()
-        print("Submitted")
     }
 }

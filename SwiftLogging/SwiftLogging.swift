@@ -13,16 +13,13 @@ class Logger {
 
     static let sharedInstance = Logger()
     
-    var queue: dispatch_queue_t! = dispatch_queue_create("io.schwa.SwiftLogger", DISPATCH_QUEUE_SERIAL)
+    let queue: dispatch_queue_t = dispatch_queue_create("io.schwa.SwiftLogger", DISPATCH_QUEUE_SERIAL)
 
     var accumulator = 0
     
     func log(event: Event) {
         dispatch_async(queue) {
-            autoreleasepool() {
-                let s = String(event)
-                self.accumulator ^= event.id.hashValue
-            }
+            self.accumulator ^= String(event.id).hashValue
         }
     }
 
@@ -30,18 +27,25 @@ class Logger {
 
 // MARK: -
 
-struct Event {
-    let id: Int
+class Event {
+    let id = Int(arc4random())
+//    let memory = NSMutableData(length: 16)
 }
 
 func stress() {
 
     let log = Logger.sharedInstance
     
-    for N in 0..<500000 {
+    let count = 20_000_000
+    for N in 0..<count {
         autoreleasepool() {
-            let event = Event(id: N)
+            let event = Event()
+//            if N % 100 == 0 {
+//                usleep(useconds_t(0.00001 * Double(USEC_PER_SEC)))
+//            }
+//            log.log(event, last: N == count - 1)
             log.log(event)
         }
     }
 }
+
