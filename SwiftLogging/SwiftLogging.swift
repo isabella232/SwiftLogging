@@ -34,11 +34,18 @@ class Event {
 
 func stress() {
 
+
+
+
+
     let log = Logger.sharedInstance
     
     let count = 20_000_000
     for N in 0..<count {
         autoreleasepool() {
+            if N % 500_000 == 0 {
+                print(Double(memory()) / (1024 * 1024))
+            }
             let event = Event()
 //            if N % 100 == 0 {
 //                usleep(useconds_t(0.00001 * Double(USEC_PER_SEC)))
@@ -49,3 +56,14 @@ func stress() {
     }
 }
 
+func memory() -> Int {
+
+    var usage = rusage()
+    if getrusage(RUSAGE_SELF, &usage) != 0 {
+        fatalError()
+    }
+
+    return usage.ru_maxrss
+
+
+}
