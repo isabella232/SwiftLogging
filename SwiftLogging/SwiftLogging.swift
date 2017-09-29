@@ -26,29 +26,27 @@ open class Logger {
     internal var count: Int64 = 0
     internal var running: Bool = false
 
-    internal var lock = NSRecursiveLock()
-
     public init() {
     }
 
     open func addDestination(_ destination: Destination) {
-        lock.with() {
+        queue.async {
             let key = destination.identifier
             self.destinations[key] = destination
             destination.logger = self
             do {
-                if running == true {
+                if self.running == true {
                     try destination.startup()
                 }
             }
             catch let error {
-                internalLog("Failed to start destination: \(destination.identifier) - \(error)")
+                self.internalLog("Failed to start destination: \(destination.identifier) - \(error)")
             }
         }
     }
 
     open func removeDestination(_ key: String) {
-        lock.with() {
+        queue.async {
             guard let destination = self.destinations[key] else {
                 return
             }
@@ -57,26 +55,24 @@ open class Logger {
                 try destination.shutdown()
             }
             catch let error {
-                internalLog("Failed to shut down destination: \(destination.identifier) - \(error)")
+                self.internalLog("Failed to shut down destination: \(destination.identifier) - \(error)")
             }
             destination.logger = nil
         }
     }
 
     open func destinationForKey(_ key: String) -> Destination? {
-        return lock.with() {
-            return destinations[key]
-        }
+        return destinations[key]
     }
 
     open func addFilter(_ key: String, filter: @escaping Filter) {
-        lock.with() {
+        queue.async {
             self.filters.append((key, filter))
         }
     }
 
     open func removeFilter(_ key: String) {
-        lock.with() {
+        queue.async {
             for (index, (k, _)) in self.filters.enumerated() {
                 if key == k {
                     self.filters.remove(at: index)
@@ -87,44 +83,44 @@ open class Logger {
     }
 
     open func startup() {
-        lock.with() {
-            running = true
-            for (_, destination) in destinations {
+        queue.async {
+            self.running = true
+            for (_, destination) in self.destinations {
                 do {
                     try destination.startup()
                 }
                 catch let error {
-                    internalLog("Failed to start up logging destination: \(destination.identifier) - \(error)")
+                    self.internalLog("Failed to start up logging destination: \(destination.identifier) - \(error)")
                 }
             }
         }
     }
 
     open func shutdown() {
-        lock.with() {
-            if running == false {
+        queue.async {
+            if self.running == false {
                 return
             }
 
-            for (_, destination) in destinations {
+            for (_, destination) in self.destinations {
                 do {
                     try destination.shutdown()
                 }
                 catch let error {
-                    internalLog("Failed to shut down logging destination: \(destination.identifier) - \(error)")
+                    self.internalLog("Failed to shut down logging destination: \(destination.identifier) - \(error)")
                 }
             }
         }
     }
 
     open func flush() {
-        lock.with() {
-            for (_, destination) in destinations {
+        queue.async {
+            for (_, destination) in self.destinations {
                 do {
                     try destination.flush()
                 }
                 catch let error {
-                    internalLog("Failed to flush logging destination: \(destination.identifier) - \(error)")
+                    self.internalLog("Failed to flush logging destination: \(destination.identifier) - \(error)")
                 }
             }
         }
@@ -135,11 +131,11 @@ open class Logger {
         var filters: [(String, Filter)]!
         var destinations: [String: Destination]!
 
-        lock.with() {
-            if count == 0 {
-                startup()
+        queue.sync {
+            if self.count == 0 {
+                self.startup()
             }
-            count += 1
+            self.count += 1
             
             filters = self.filters
             destinations = self.destinations
@@ -148,6 +144,7 @@ open class Logger {
         let shouldFlush = event.tags?.contains(flushTag)
 
         var filteredEvent1: Event? = event
+        
         for (_, filter) in filters {
             filteredEvent1 = filter(filteredEvent1!)
             if filteredEvent1 == nil {
@@ -184,7 +181,7 @@ open class Logger {
 
     func internalLog(_ subject: Any?) {
         consoleQueue.async {
-            print(subject)
+            print(subject ?? "nil")
         }
     }
 }
