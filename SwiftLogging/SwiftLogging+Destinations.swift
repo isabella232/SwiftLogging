@@ -79,9 +79,9 @@ open class MemoryDestination: Destination {
 
 open class FileDestination: Destination {
 
-    open let url: URL
+    public let url: URL
 
-    open let queue = DispatchQueue(label: "io.schwa.SwiftLogging.FileDestination", attributes: [])
+    public let queue = DispatchQueue(label: "io.schwa.SwiftLogging.FileDestination", attributes: [])
     open var open: Bool = false
     var channel: DispatchIO?
     let rotations: Int?
@@ -169,7 +169,7 @@ open class FileDestination: Destination {
             }
 
             channel.write(offset: 0, data: dispatchData, queue: strong_self.queue) {
-                _ -> Void in
+                _,_,_  -> Void in
 
                 // TODO: This left intentionally blank?
             }
@@ -199,7 +199,7 @@ open class FileDestination: Destination {
         }
     }
 
-    open static var defaultFileDestinationURL: URL {
+    public static var defaultFileDestinationURL: URL {
         let bundle = Bundle.main
         // If we're in a bundle: use ~/Library/Application Support/<bundle identifier>/<bundle name>.log
         if let bundleIdentifier = bundle.bundleIdentifier, let bundleName = bundle.infoDictionary?["CFBundleName"] as? String {

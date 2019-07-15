@@ -8,7 +8,7 @@
 
 import Foundation
 import Darwin
-import SwiftUtilities
+//import SwiftUtilities
 
 public var log = Logger.sharedInstance
 
@@ -19,8 +19,8 @@ open class Logger {
     open internal(set) var destinations: [String: Destination] = [:]
     open internal(set) var filters: [(String, Filter)] = []
 
-    open let queue = DispatchQueue(label: "io.schwa.SwiftLogger", attributes: [])
-    open let consoleQueue = DispatchQueue(label: "io.schwa.SwiftLogger.console", attributes: [])
+    public let queue = DispatchQueue(label: "io.schwa.SwiftLogger", attributes: [])
+    public let consoleQueue = DispatchQueue(label: "io.schwa.SwiftLogger.console", attributes: [])
 
     internal let startTimestamp: Timestamp = Timestamp()
     internal var count: Int64 = 0
@@ -217,8 +217,8 @@ public struct Source {
 }
 
 extension Source: Hashable {
-    public var hashValue: Int {
-        return filename.hashValue ^ function.hashValue ^ line.hashValue
+    public func hash(into hasher: inout Hasher) {
+        hasher.combine(filename.hashValue ^ function.hashValue ^ line.hashValue)
     }
 }
 
@@ -269,25 +269,25 @@ public struct Event {
     public let tags: Tags?
     public let userInfo: UserInfo?
 
-    public init(id:Int? = nil, subject: Subject, priority: Priority, timestamp: Timestamp? = Timestamp(), source: Source, tags: Tags? = nil, userInfo: UserInfo? = nil) {
+    public init(id:Int? = nil, subject: Subject, priority: Priority, timestamp: Timestamp? = nil, source: Source, tags: Tags? = nil, userInfo: UserInfo? = nil) {
         self.id = id ?? Event.generateID()
         self.subject = subject
         self.priority = priority
-        self.timestamp = timestamp
+        self.timestamp = timestamp ?? Timestamp()
         self.source = source
         self.tags = tags
         self.userInfo = userInfo
     }
 
-    public init(id:Int? = nil, subject: Any?, priority: Priority, timestamp: Timestamp? = Timestamp(), source: Source, tags: Tags? = nil, userInfo: UserInfo? = nil) {
+    public init(id:Int? = nil, subject: Any?, priority: Priority, timestamp: Timestamp? = nil, source: Source, tags: Tags? = nil, userInfo: UserInfo? = nil) {
         self = Event(id: id, subject: .raw(subject), priority: priority, timestamp: timestamp, source: source, tags: tags, userInfo: userInfo)
     }
 
 }
 
 extension Event: Hashable {
-    public var hashValue: Int {
-        return id.hashValue
+    public func hash(into hasher: inout Hasher) {
+        hasher.combine(id.hashValue)
     }
 }
 
@@ -315,7 +315,7 @@ open class Destination {
 
     open internal(set) weak var logger: Logger!
 
-    open let identifier: String
+    public let identifier: String
     open var filters: [Filter] = []
     open var formatter: EventFormatter = terseFormatter
 

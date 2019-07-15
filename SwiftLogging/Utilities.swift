@@ -66,8 +66,8 @@ public struct Timestamp {
 }
 
 extension Timestamp: Hashable {
-    public var hashValue: Int {
-        return timeIntervalSinceReferenceDate.hashValue
+    public func hash(into hasher: inout Hasher) {
+        hasher.combine(timeIntervalSinceReferenceDate.hashValue)
     }
 }
 
@@ -86,7 +86,7 @@ public extension Timestamp {
         return iso8601Formatter.string(from: asDate)
     }
 
-    public var toTimeString: String {
+    var toTimeString: String {
         return timeFormatter.string(from: asDate)
     }
 }
