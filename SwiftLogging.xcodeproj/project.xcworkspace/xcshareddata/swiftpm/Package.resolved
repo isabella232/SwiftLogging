@@ -1,0 +1,25 @@
+{
+  "object": {
+    "pins": [
+      {
+        "package": "SwiftIO",
+        "repositoryURL": "https://github.com/Esri/SwiftIO",
+        "state": {
+          "branch": null,
+          "revision": "84fb4b2ad9e95ae0e87bb7e93329f40eb1c563da",
+          "version": "0.5.2"
+        }
+      },
+      {
+        "package": "SwiftUtilities",
+        "repositoryURL": "https://github.com/Esri/SwiftUtilities",
+        "state": {
+          "branch": null,
+          "revision": "59510d708eb1bbfc5d4a29f96e60a77a3306047b",
+          "version": "0.3.0"
+        }
+      }
+    ]
+  },
+  "version": 1
+}

@@ -6,7 +6,7 @@
 //  Copyright (c) 2015 schwa.io. All rights reserved.
 //
 
-import Cocoa
+import Foundation
 import XCTest
 import SwiftLogging
 
@@ -27,21 +27,21 @@ class SwiftLogging_Tests: XCTestCase {
      
      Note we have to construct a Event manually and call log() with immedate: true to prevent the operation from being deferred.
      */
-    func testFilters() {
-        let logger = Logger()
-        let memoryDestination = MemoryDestination(identifier: "test")
-        logger.addDestination("memory", destination: memoryDestination)
-
-        XCTAssert(memoryDestination.events.count == 0)
-
-        logger.log(Event(subject: 1, priority: .Debug, source: Source()), immediate: true)
-
-        XCTAssert(memoryDestination.events.count == 1)
-
-        logger.addFilter("test", filter: nilFilter)
-
-        logger.log(Event(subject: 2, priority: .Debug, source: Source()), immediate: true)
-
-        XCTAssert(memoryDestination.events.count == 1)
-    }
+//    func testFilters() {
+//        let logger = Logger()
+//        let memoryDestination = MemoryDestination(identifier: "test")
+//        logger.addDestination("memory", destination: memoryDestination)
+//
+//        XCTAssert(memoryDestination.events.count == 0)
+//
+//        logger.log(Event(subject: 1, priority: .Debug, source: Source()), immediate: true)
+//
+//        XCTAssert(memoryDestination.events.count == 1)
+//
+//        logger.addFilter("test", filter: nilFilter)
+//
+//        logger.log(Event(subject: 2, priority: .Debug, source: Source()), immediate: true)
+//
+//        XCTAssert(memoryDestination.events.count == 1)
+//    }
 }

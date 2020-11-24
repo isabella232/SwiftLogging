@@ -8,11 +8,12 @@
 
 import SwiftIO
 import SwiftUtilities
+import Foundation
 
 public class LogServerDestination: Destination {
     public private(set) var server: TCPServer!
 
-    public init(identifier: String, address: Address, formatter: EventFormatter = terseFormatter) throws  {
+    public init(identifier: String, address: Address, formatter: @escaping EventFormatter = terseFormatter) throws  {
         super.init(identifier: identifier)
         self.formatter = formatter
 
@@ -27,26 +28,24 @@ public class LogServerDestination: Destination {
         try server.startListening()
     }
 
-    public convenience init(identifier: String, port: UInt16 = 4000, formatter: EventFormatter = terseFormatter) throws  {
+    public convenience init(identifier: String, port: UInt16 = 4000, formatter: @escaping EventFormatter = terseFormatter) throws  {
         let address = try Address(address: "0.0.0.0", port: port)
         try self.init(identifier: identifier, address: address, formatter: formatter)
     }
 
-    public override func receiveEvent(event: Event) {
-        guard case .Formatted(let subject) = event.subject else {
+    public override func receiveEvent(_ event: Event) {
+        guard case .formatted(let subject) = event.subject else {
             fatalError("Cannot process unformatted events.")
         }
         let string = subject + "\n"
-        do {
-            let data = try DispatchData <Void> (string, encoding: NSUTF8StringEncoding)
+        if let data = DispatchData(string: string) {
             for channel in server.connections.value {
                 channel.write(data) {
                     (result) in
                 }
             }
-        }
-        catch let error {
-            print("Could not write data to clients: \(error)")
+        } else {
+            print("Could not write data to clients")
         }
     }
 

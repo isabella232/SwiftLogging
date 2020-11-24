@@ -8,8 +8,6 @@
 
 import Foundation
 
-import SwiftLogging
-
 public var log: Logger = {
     var logger = SwiftLogging.log
 

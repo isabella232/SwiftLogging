@@ -14,10 +14,24 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "453A359E1B07203B00A3923D"
-               BuildableName = "GUI_OSX.app"
-               BlueprintName = "GUI_OSX"
-               ReferencedContainer = "container:SwiftLogging.xcodeproj">
+               BlueprintIdentifier = "SwiftLogging"
+               BuildableName = "SwiftLogging"
+               BlueprintName = "SwiftLogging"
+               ReferencedContainer = "container:">
+            </BuildableReference>
+         </BuildActionEntry>
+         <BuildActionEntry
+            buildForTesting = "YES"
+            buildForRunning = "YES"
+            buildForProfiling = "NO"
+            buildForArchiving = "NO"
+            buildForAnalyzing = "YES">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "SwiftLoggingTests"
+               BuildableName = "SwiftLoggingTests"
+               BlueprintName = "SwiftLoggingTests"
+               ReferencedContainer = "container:">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
@@ -27,16 +41,17 @@
       selectedDebuggerIdentifier = "Xcode.DebuggerFoundation.Debugger.LLDB"
       selectedLauncherIdentifier = "Xcode.DebuggerFoundation.Launcher.LLDB"
       shouldUseLaunchSchemeArgsEnv = "YES">
-      <MacroExpansion>
-         <BuildableReference
-            BuildableIdentifier = "primary"
-            BlueprintIdentifier = "453A359E1B07203B00A3923D"
-            BuildableName = "GUI_OSX.app"
-            BlueprintName = "GUI_OSX"
-            ReferencedContainer = "container:SwiftLogging.xcodeproj">
-         </BuildableReference>
-      </MacroExpansion>
       <Testables>
+         <TestableReference
+            skipped = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "SwiftLoggingTests"
+               BuildableName = "SwiftLoggingTests"
+               BlueprintName = "SwiftLoggingTests"
+               ReferencedContainer = "container:">
+            </BuildableReference>
+         </TestableReference>
       </Testables>
    </TestAction>
    <LaunchAction
@@ -53,10 +68,10 @@
          runnableDebuggingMode = "0">
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "453A359E1B07203B00A3923D"
-            BuildableName = "GUI_OSX.app"
-            BlueprintName = "GUI_OSX"
-            ReferencedContainer = "container:SwiftLogging.xcodeproj">
+            BlueprintIdentifier = "SwiftLogging"
+            BuildableName = "SwiftLogging"
+            BlueprintName = "SwiftLogging"
+            ReferencedContainer = "container:">
          </BuildableReference>
       </BuildableProductRunnable>
    </LaunchAction>
@@ -70,10 +85,10 @@
          runnableDebuggingMode = "0">
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "453A359E1B07203B00A3923D"
-            BuildableName = "GUI_OSX.app"
-            BlueprintName = "GUI_OSX"
-            ReferencedContainer = "container:SwiftLogging.xcodeproj">
+            BlueprintIdentifier = "SwiftLogging"
+            BuildableName = "SwiftLogging"
+            BlueprintName = "SwiftLogging"
+            ReferencedContainer = "container:">
          </BuildableReference>
       </BuildableProductRunnable>
    </ProfileAction>
